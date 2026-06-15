@@ -82,13 +82,13 @@ canvas{display:block;touch-action:none}
 #fp-crosshair::after{width:24px;height:2px;top:11px;left:0}
 
 /* ── Complete screen ── */
-#complete-screen{position:absolute;inset:0;z-index:100;background:linear-gradient(135deg,#00b894,#55efc4,#ffeaa7);display:none;flex-direction:column;align-items:center;justify-content:center;color:#fff}
+#complete-screen{position:absolute;inset:0;z-index:100;background:linear-gradient(135deg,#00b894,#55efc4,#ffeaa7);display:none;flex-direction:column;align-items:center;justify-content:flex-start;color:#fff;overflow-y:auto;padding:30px 16px}
 #complete-screen h1{font-size:38px;margin-bottom:10px;text-shadow:0 2px 8px rgba(0,0,0,0.15)}
 #complete-screen p{font-size:16px;margin-bottom:24px;opacity:.9}
 #complete-screen .btn-row{display:flex;gap:16px}
 #complete-screen button{border:none;padding:14px 36px;font-size:17px;border-radius:30px;cursor:pointer;font-weight:bold;box-shadow:0 4px 16px rgba(0,0,0,0.15);transition:transform .2s}
 #complete-screen button:hover{transform:scale(1.06)}
-#complete-screen .report-card{background:rgba(255,255,255,0.2);border-radius:16px;padding:20px 28px;margin-bottom:20px;min-width:340px;max-width:440px;text-align:left}
+#complete-screen .report-card{background:rgba(255,255,255,0.2);border-radius:16px;padding:20px 28px;margin-bottom:20px;min-width:340px;max-width:560px;max-height:65vh;overflow-y:auto;text-align:left}
 #complete-screen .report-card h2{font-size:20px;margin-bottom:12px;text-align:center}
 #complete-screen .report-row{display:flex;justify-content:space-between;padding:5px 0;font-size:14px;border-bottom:1px solid rgba(255,255,255,0.2)}
 #complete-screen .report-row:last-child{border-bottom:none}
@@ -102,8 +102,10 @@ canvas{display:block;touch-action:none}
 #export-report-btn{background:#E8EAF6;color:#283593}
 
 /* ── Equipment Panel ── */
-#equip-panel{position:absolute;top:16px;right:16px;z-index:12;background:rgba(255,255,255,0.96);border-radius:16px;padding:16px;box-shadow:0 4px 24px rgba(0,0,0,0.15);width:200px;max-height:85vh;overflow-y:auto;font-size:13px;color:#333}
+#equip-panel{position:absolute;top:16px;right:16px;z-index:12;background:rgba(255,255,255,0.96);border-radius:16px;padding:16px;box-shadow:0 4px 24px rgba(0,0,0,0.15);width:200px;max-height:85vh;display:flex;flex-direction:column;font-size:13px;color:#333}
 #equip-panel h3{margin-bottom:8px}
+#equip-body{flex:1;overflow-y:auto;min-height:0}
+#equip-footer{flex-shrink:0;border-top:1px solid #eee;padding-top:8px;margin-top:4px}
 .equip-group{margin-bottom:4px}
 .equip-group-header{font-size:13px;font-weight:bold;padding:6px 10px;background:#FFF3E0;border-radius:8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
 .equip-group-header .collapse-icon{font-size:10px;transition:transform .2s}
@@ -148,6 +150,7 @@ canvas{display:block;touch-action:none}
 #food-panel{position:absolute;top:16px;right:16px;z-index:12;background:rgba(255,255,255,0.96);border-radius:16px;padding:14px;box-shadow:0 4px 24px rgba(0,0,0,0.15);width:210px;max-height:85vh;display:flex;flex-direction:column;font-size:13px;color:#333}
 #food-panel h3{margin-bottom:6px}
 #food-header{flex-shrink:0}
+#nutri-toggle{display:none}
 #food-body{flex:1;overflow-y:auto;min-height:0}
 #food-footer{flex-shrink:0}
 .meal-tabs{display:flex;gap:3px;margin-bottom:8px;flex-wrap:wrap}
@@ -236,63 +239,116 @@ canvas{display:block;touch-action:none}
   .game-card h2{font-size:14px;margin-bottom:2px}
   .game-card .card-desc{font-size:10px;line-height:1.4;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
   .game-card .card-steps{font-size:9px;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .game-card .card-btn{font-size:11px;padding:6px 16px}
+  .game-card .card-btn{font-size:11px;padding:10px 16px;min-height:40px}
 
-  /* HUD - top bar */
-  #hud{top:auto;bottom:0;left:0;right:0;min-width:unset;max-height:40vh;border-radius:14px 14px 0 0;width:100%;max-width:100%}
-  #hud h2{font-size:13px}
-  .step-list li{font-size:12px;padding:4px 8px}
-  .step-group{font-size:10px;padding:2px 8px}
+  /* ── Shared panel layout on mobile ── */
+  /* HUD moves to compact top bar */
+  #hud{top:0;bottom:auto;left:0;right:0;min-width:unset;max-height:45vh;border-radius:0 0 14px 14px;width:100%;max-width:100%;z-index:11;overflow-y:auto}
+  #hud h2{font-size:12px;padding:4px 0 2px}
+  .step-list li{font-size:11px;padding:6px 8px;gap:6px;min-height:32px}
+  .step-icon{width:20px;font-size:12px}
+  .step-group{font-size:9px;padding:3px 6px;margin:3px 0 1px}
+  .step-error-heat{font-size:9px;padding:0 3px}
 
-  /* Right panels → bottom drawer */
-  #equip-panel{top:auto;bottom:0;left:0;right:0;width:100%;max-width:100%;max-height:50vh;border-radius:14px 14px 0 0;padding:12px;overflow-y:auto}
-  #equip-panel h3{font-size:13px}
-  .equip-item{font-size:11px;padding:5px 8px}
-  .equip-group-header{font-size:12px;padding:5px 8px}
+  /* Right panels → bottom drawer with fixed footer */
+  #equip-panel{top:auto;bottom:0;left:0;right:0;width:100%;max-width:100%;max-height:60vh;border-radius:14px 14px 0 0;padding:10px 12px 12px}
+  #equip-panel h3{font-size:12px;margin-bottom:4px}
+  #equip-body{max-height:30vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .equip-item{font-size:12px;padding:8px 10px;min-height:36px}
+  .equip-group-header{font-size:12px;padding:8px 10px;min-height:36px}
   .equip-sub-header{font-size:10px}
-  .equip-toolbar button{font-size:11px;padding:5px 6px;min-width:60px}
+  #equip-footer{border-top:1px solid #eee;padding-top:6px;margin-top:4px}
+  .equip-toolbar{gap:4px}
+  .equip-toolbar button{font-size:10px;padding:8px 4px;min-width:44px;border-radius:6px;min-height:36px}
 
-  #food-panel{top:auto;bottom:0;left:0;right:0;width:100%;max-width:100%;max-height:50vh;border-radius:14px 14px 0 0;padding:12px}
-  #food-panel h3{font-size:13px}
-  .meal-tab{font-size:10px;padding:3px 6px}
-  .food-item{font-size:11px;padding:4px 6px}
+  #food-panel{top:auto;bottom:0;left:0;right:0;width:100%;max-width:100%;max-height:60vh;border-radius:14px 14px 0 0;padding:10px 12px 12px}
+  #food-panel h3{font-size:12px;margin-bottom:4px}
+  #food-header{font-size:11px}
+  #food-header>div{font-size:10px!important;padding:6px 8px!important}
+  .meal-tabs{gap:3px;margin-bottom:6px}
+  .meal-tab{font-size:10px;padding:6px 8px;border-radius:8px;min-height:32px}
+  #meal-info{font-size:10px!important;margin:3px 0!important}
+  #food-body{max-height:30vh;-webkit-overflow-scrolling:touch}
+  .food-item{font-size:12px;padding:6px 8px;min-height:36px}
   .food-gram{font-size:9px}
+  #food-footer .equip-toolbar button{font-size:10px;padding:8px 4px;min-width:44px;min-height:36px}
+  #plate-contents{font-size:11px;min-height:20px}
+  #diet-totals{font-size:10px}
 
-  #nutri-overview{top:auto;bottom:0;left:0;right:0;width:100%;max-width:100%;max-height:50vh;border-radius:14px 14px 0 0;padding:12px;z-index:13}
+  /* Nutri overview → overlay on top of food-panel on mobile */
+  #nutri-overview{top:0;bottom:auto;left:0;right:0;width:100%;max-width:100%;max-height:50vh;border-radius:0 0 14px 14px;padding:10px 12px;z-index:15;font-size:11px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .nutri-title{font-size:11px}
+  .nutri-row-label{font-size:9px}
+  .nutri-meal-title{font-size:9px}
+  #nutri-toggle{display:inline!important}
 
   /* Complete screen */
+  #complete-screen{padding:20px 12px}
   #complete-screen h1{font-size:22px}
   #complete-screen .grade{font-size:48px}
   #complete-screen p{font-size:13px}
-  #complete-screen .report-card{min-width:unset;max-width:92vw;padding:14px 18px}
-  #complete-screen .report-card h2{font-size:16px}
-  #complete-screen .report-row{font-size:12px}
-  #complete-screen .step-detail{font-size:10px;max-height:120px}
-  #complete-screen button{padding:10px 24px;font-size:14px}
-  #complete-screen .btn-row{flex-wrap:wrap;gap:10px}
+  #complete-screen .report-card{min-width:unset;max-width:92vw;padding:14px 18px;max-height:60vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  #complete-screen .report-card h2{font-size:15px}
+  #complete-screen .report-row{font-size:11px;padding:4px 0}
+  #complete-screen .step-detail{font-size:10px;max-height:160px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  #complete-screen button{padding:10px 20px;font-size:13px;min-height:40px}
+  #complete-screen .btn-row{flex-wrap:wrap;gap:8px;margin-bottom:20px}
+  .suggestion-title{font-size:12px!important}
+  .suggestion-desc{font-size:10px!important}
+  .suggestion-item{margin-bottom:12px!important}
+  .suggestion-icon{font-size:20px!important;width:28px!important}
 
-  /* Instructions - compact on mobile */
-  #instructions{display:block!important;top:auto;bottom:50px;left:50%;transform:translateX(-50%);right:auto;max-width:90vw;padding:6px 12px;font-size:10px;border-radius:10px;text-align:center;white-space:nowrap}
+  /* Instructions - compact bottom bar */
+  #instructions{display:block!important;top:auto;bottom:8px;left:50%;transform:translateX(-50%);right:auto;max-width:90vw;padding:5px 12px;font-size:10px;border-radius:10px;text-align:center;white-space:normal}
   #instructions h3{display:none}
   #instr-touch{display:inline}
   #instr-mouse{display:none}
 
   /* Messages */
-  #message{font-size:13px;padding:8px 16px;bottom:24px}
-  #substep-panel{max-width:90vw;padding:10px 16px;bottom:60px}
+  #message{font-size:12px;padding:8px 16px;bottom:56px;max-width:85vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #substep-panel{max-width:88vw;padding:10px 14px;bottom:60px;font-size:11px}
   #substep-panel h3{font-size:13px}
   #substep-panel p{font-size:11px}
-  #back-btn{font-size:12px;padding:5px 14px;top:10px}
-  #view-toggle-btn{font-size:12px;padding:6px 12px;bottom:10px;right:10px}
+  #back-btn{font-size:12px;padding:8px 14px;top:8px;left:8px;transform:none;min-height:36px}
+  #view-toggle-btn{font-size:12px;padding:8px 14px;bottom:8px;right:8px;min-height:36px}
+
+  /* Preview done dialog */
+  #preview-done-dlg{min-width:200px!important;max-width:85vw!important;padding:16px 20px!important}
+  #preview-done-dlg>div:first-child{font-size:24px!important}
+  #preview-done-dlg>div:nth-child(2){font-size:15px!important}
+  #preview-done-dlg>div:nth-child(3){font-size:11px!important;margin-bottom:12px!important}
+  #preview-done-dlg button{font-size:13px!important;padding:12px 18px!important;min-height:44px!important}
+
+  /* FP exit button */
+  #fp-exit{bottom:16px!important;padding:10px 24px!important;font-size:13px!important;min-height:44px!important}
+
+  /* Diet eval panel */
+  #diet-eval-panel>div{max-width:95vw!important;max-height:85vh!important;padding:14px!important}
+  #diet-eval-panel h3{font-size:14px}
+  #diet-eval-panel [style*="font-size:42px"]{font-size:32px!important}
+  #diet-eval-panel [style*="font-size:20px"]{font-size:16px!important}
+  #diet-eval-panel [style*="display:grid"]{grid-template-columns:1fr 1fr;gap:4px!important}
+  #diet-eval-panel [style*="display:grid"]>div{padding:6px!important}
+  #diet-eval-panel button[style*="padding:10px 32px"]{padding:10px 20px!important;font-size:13px!important;min-height:40px!important}
+  #diet-eval-panel button[style*="padding:8px 24px"]{padding:8px 16px!important;font-size:12px!important;min-height:36px!important}
+  #diet-eval-panel button[style*="padding:10px 28px"]{padding:8px 16px!important;font-size:12px!important;min-height:36px!important}
+
+  /* Recipe panel */
+  #recipe-panel>div{max-width:95vw!important;padding:14px!important}
+  #recipe-panel h3{font-size:14px!important}
 
   /* Model browser */
   .model-browser-content{width:92vw;max-width:360px;padding:12px}
 
   /* Drill panel */
-  .drill-panel{max-width:92vw;padding:10px 16px}
-  .drill-title{font-size:15px}
-  .drill-hint{font-size:11px}
-  .drill-badge{font-size:10px}
+  .drill-panel{max-width:92vw;padding:12px 16px}
+  .drill-title{font-size:16px}
+  .drill-hint{font-size:12px}
+  .drill-badge{font-size:11px}
+  .drill-dot{width:16px;height:16px}
+
+  /* Tooltip - clamp to viewport */
+  #tooltip{max-width:70vw;font-size:12px}
 
   /* Canvas touch */
   canvas{touch-action:none}
@@ -545,7 +601,20 @@ function exportReport(){
   const gameNames={clean:'🧹 擦拭训练',meal:'🍽️ 进餐训练',handwash:'🤲 盥洗训练',outdoor:'🏕️ 体能大循环',diet:'🥗 膳食搭配'};
   const title=gameNames[currentGame]||'实操训练';
 
-  const W=800,H=1100;
+  // ── Diet game: use taller canvas for full report ──
+  const isDiet=currentGame==='diet';
+  const W=800;
+  let totalH=1100;
+  if(isDiet&&game){
+    const mealCount=MEAL_SLOTS.filter(s=>(game.mealPlans[s.id]||[]).length>0).length;
+    totalH=1400+mealCount*80+Object.values(game.mealPlans).flat().length*16+200;
+    totalH=Math.max(1400,Math.min(2400,totalH));
+  }else if(currentGame==='outdoor'&&game&&game.routeOrder){
+    // Base + route map + station detail + suggestions
+    totalH=1600+(game.routeOrder.length)*20+200;
+    totalH=Math.max(1600,Math.min(2200,totalH));
+  }
+  const H=totalH;
   const cvs=document.createElement('canvas');cvs.width=W;cvs.height=H;
   const ctx=cvs.getContext('2d');
 
@@ -570,9 +639,11 @@ function exportReport(){
 
   // Message
   ctx.fillStyle='#555';ctx.font='15px sans-serif';ctx.textAlign='center';
-  ctx.fillText(msg,W/2,y);y+=36;
+  const msgLines=msg.split('\n');
+  msgLines.forEach(line=>{ctx.fillText(line,W/2,y);y+=22});
 
   // Divider
+  y+=10;
   ctx.strokeStyle='#ddd';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx+40,y);ctx.lineTo(cx+cw-40,y);ctx.stroke();y+=20;
 
   // Report rows
@@ -591,8 +662,198 @@ function exportReport(){
   });
   y+=10;
 
-  // Step detail rows
-  if(stepRows.length>0){
+  // ── Diet-specific: meal plan + recipes ──
+  if(isDiet&&game){
+    // ── Complete Meal Plan ──
+    ctx.strokeStyle='#ddd';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx+40,y);ctx.lineTo(cx+cw-40,y);ctx.stroke();y+=14;
+    ctx.fillStyle='#8E44AD';ctx.font='bold 15px sans-serif';
+    ctx.fillText('🍽️ 完整配餐方案',cx+60,y+4);y+=24;
+    MEAL_SLOTS.forEach(slot=>{
+      const foods=game.mealPlans[slot.id]||[];
+      // Meal header
+      ctx.fillStyle='#8E44AD';ctx.font='bold 12px sans-serif';
+      ctx.fillText(`${slot.icon} ${slot.name}（${slot.time}）`,cx+70,y+4);y+=18;
+      if(foods.length===0){
+        ctx.fillStyle='#bbb';ctx.font='12px sans-serif';
+        ctx.fillText('未安排',cx+90,y+4);y+=16;
+      }else{
+        ctx.fillStyle='#555';ctx.font='12px sans-serif';
+        const foodStr=foods.map(f=>`${f.icon}${f.name}${f.grams}g${f.bad?' ⚠️':''}`).join('、');
+        // Word wrap
+        const maxW=cw-120;
+        let line='';
+        for(let i=0;i<foodStr.length;i++){
+          const testLine=line+foodStr[i];
+          if(ctx.measureText(testLine).width>maxW&&line){
+            ctx.fillText(line,cx+90,y+4);y+=16;
+            line=foodStr[i];
+          }else{line=testLine}
+        }
+        if(line){ctx.fillText(line,cx+90,y+4);y+=16}
+      }
+      y+=4;
+    });
+    y+=6;
+
+    // ── Recipes ──
+    ctx.strokeStyle='#ddd';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx+40,y);ctx.lineTo(cx+cw-40,y);ctx.stroke();y+=14;
+    ctx.fillStyle='#8E44AD';ctx.font='bold 15px sans-serif';
+    ctx.fillText('📋 一日菜谱',cx+60,y+4);y+=24;
+    const mainSlots=['breakfast','lunch','dinner'];
+    const slotInfoMap={breakfast:{icon:'🌅',name:'早餐'},lunch:{icon:'☀️',name:'午餐'},dinner:{icon:'🌙',name:'晚餐'}};
+    mainSlots.forEach(slotId=>{
+      const info=slotInfoMap[slotId];
+      const foods=(game.mealPlans[slotId]||[]).filter(f=>!f.bad);
+      if(foods.length===0)return;
+      const slot=MEAL_SLOTS.find(s=>s.id===slotId);
+      // Generate simple dishes
+      const dishes=[];
+      const staples=[],meats=[],vegs=[],eggs=[],dairy=[],fruits=[],soyGrp=[],nutsGrp=[];
+      foods.forEach(f=>{
+        if(f.group==='谷类'||f.group==='薯类')staples.push(f);
+        else if(f.group==='畜禽肉'||f.group==='水产品')meats.push(f);
+        else if(f.group==='蔬菜')vegs.push(f);
+        else if(f.group==='蛋类')eggs.push(f);
+        else if(f.group==='乳制品')dairy.push(f);
+        else if(f.group==='水果')fruits.push(f);
+        else if(f.group==='大豆')soyGrp.push(f);
+        else if(f.group==='坚果')nutsGrp.push(f);
+      });
+      staples.forEach(f=>{dishes.push({name:STAPLE_NAMES[f.foodId]||f.name,foods:[f]})});
+      meats.forEach(m=>{const v=vegs.shift();if(v)dishes.push({name:`${VEG_SHORT[v.foodId]||v.name}${(COOK_METHODS[m.foodId]||['炖'])[0]}${m.name.replace('瘦','')}`,foods:[m,v]});else dishes.push({name:`${(COOK_METHODS[m.foodId]||['清蒸'])[0]}${m.name.replace('瘦','')}`,foods:[m]})});
+      vegs.forEach(v=>{dishes.push({name:`清蒸${VEG_SHORT[v.foodId]||v.name}`,foods:[v]})});
+      eggs.forEach(e=>{dishes.push({name:'蒸蛋',foods:[e]})});
+      soyGrp.forEach(s=>{dishes.push({name:'清蒸豆腐',foods:[s]})});
+      dairy.forEach(d=>{dishes.push({name:d.name,foods:[d]})});
+      if(fruits.length>0)dishes.push({name:fruits.length===1?fruits[0].name:'水果拼盘',foods:fruits});
+      if(nutsGrp.length>0)dishes.push({name:nutsGrp.length===1?nutsGrp[0].name:'坚果碎',foods:nutsGrp});
+
+      // Meal header
+      ctx.fillStyle='#E67E22';ctx.font='bold 12px sans-serif';
+      ctx.fillText(`${info.icon} ${info.name}（${slot.time}）`,cx+70,y+4);y+=18;
+      // Dish names
+      dishes.forEach(d=>{
+        ctx.fillStyle='#555';ctx.font='12px sans-serif';
+        ctx.fillText(`🍽️ ${d.name}`,cx+90,y+4);y+=16;
+      });
+      // Ingredients
+      const allIngr=[];dishes.forEach(d=>d.foods.forEach(f=>{if(!allIngr.find(x=>x.foodId===f.foodId))allIngr.push(f)}));
+      const ingrParts=allIngr.map(f=>{const rm=RAW_MAP[f.foodId];return rm?`${rm.raw}${Math.round(f.grams*rm.ratio)}g`:f.name+f.grams+'g'});
+      ctx.fillStyle='#999';ctx.font='11px sans-serif';
+      const ingrStr='食材：'+ingrParts.join('、');
+      let iLine='';
+      for(let i=0;i<ingrStr.length;i++){
+        const testLine=iLine+ingrStr[i];
+        if(ctx.measureText(testLine).width>cw-140&&iLine){
+          ctx.fillText(iLine,cx+90,y+4);y+=14;
+          iLine=ingrStr[i];
+        }else{iLine=testLine}
+      }
+      if(iLine){ctx.fillText(iLine,cx+90,y+4);y+=14}
+      y+=8;
+    });
+    y+=6;
+
+    // ── Nutrition bars from DOM ──
+    const nutriBars=card.querySelectorAll('div[style*="height:5px"]');
+    if(nutriBars.length>0){
+      ctx.strokeStyle='#ddd';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx+40,y);ctx.lineTo(cx+cw-40,y);ctx.stroke();y+=14;
+      ctx.fillStyle='#8E44AD';ctx.font='bold 15px sans-serif';
+      ctx.fillText('📊 营养摄入',cx+60,y+4);y+=22;
+      // Re-read nutri items from the inline-styled divs — extract text from parent divs
+      const nutriDivs=card.querySelectorAll('div[style*="display:flex"][style*="align-items:center"][style*="gap:4px"]');
+      nutriDivs.forEach(nd=>{
+        const text=nd.textContent;
+        if(text&&text.includes('✅')||text.includes('❌')){
+          ctx.fillStyle='#666';ctx.font='11px sans-serif';
+          // Wrap text
+          let nLine='';
+          for(let i=0;i<text.length;i++){
+            const testLine=nLine+text[i];
+            if(ctx.measureText(testLine).width>cw-120&&nLine){
+              ctx.fillText(nLine,cx+70,y+4);y+=14;
+              nLine=text[i];
+            }else{nLine=testLine}
+          }
+          if(nLine){ctx.fillText(nLine,cx+70,y+4);y+=14}
+        }
+      });
+      y+=6;
+    }
+  }
+
+  // ── Outdoor: route map ──
+  const isOutdoor=currentGame==='outdoor';
+  if(isOutdoor&&game&&game.routeOrder&&game.routeOrder.length>=2){
+    // Save camera state
+    const savedAngle=cameraAngle,savedHeight_=cameraHeight,savedDist_=cameraDist;
+    const savedTarget_=cameraTarget.clone();
+    const savedFov_=camera.fov;
+
+    // Switch to top-down view
+    camera.position.set(0,18,0.01);
+    camera.lookAt(0,0,0);
+    camera.fov=60;camera.updateProjectionMatrix();
+    renderer.render(scene,camera);
+
+    // Capture WebGL canvas
+    const glCanvas=renderer.domElement;
+    const mapW=600,mapH=Math.round(600*glCanvas.height/glCanvas.width);
+    const mapX=(W-mapW)/2;
+
+    // Section header
+    ctx.strokeStyle='#ddd';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx+40,y);ctx.lineTo(cx+cw-40,y);ctx.stroke();y+=14;
+    ctx.fillStyle='#E67E22';ctx.font='bold 15px sans-serif';ctx.textAlign='left';
+    ctx.fillText('🗺️ 路线图',cx+60,y+4);y+=24;
+
+    // Draw white background for map area
+    ctx.fillStyle='rgba(255,255,255,0.9)';
+    ctx.beginPath();ctx.roundRect(mapX-4,y-4,mapW+8,mapH+8,8);ctx.fill();
+
+    // Draw 3D scene capture
+    ctx.drawImage(glCanvas,mapX,y,mapW,mapH);
+
+    // Draw route overlay on map
+    const project2D=function(pos){
+      const v=pos.clone().project(camera);
+      return{x:mapX+(v.x+1)/2*mapW,y:y+(-v.y+1)/2*mapH};
+    };
+    // Route lines
+    ctx.strokeStyle='#E67E22';ctx.lineWidth=3;ctx.setLineDash([6,3]);
+    ctx.beginPath();
+    for(let i=0;i<game.routeOrder.length;i++){
+      const fromP=project2D(game.routeOrder[i].mesh.position);
+      const toP=project2D(game.routeOrder[(i+1)%game.routeOrder.length].mesh.position);
+      if(i===0)ctx.moveTo(fromP.x,fromP.y);
+      ctx.lineTo(toP.x,toP.y);
+    }
+    ctx.stroke();ctx.setLineDash([]);
+
+    // Station markers
+    game.routeOrder.forEach((item,i)=>{
+      const p=project2D(item.mesh.position);
+      const catItem=EQUIPMENT_CATALOG.find(c=>c.id===item.type);
+      const name=catItem?catItem.name:item.name;
+      const icon=catItem?catItem.icon:'📍';
+      // Circle
+      ctx.fillStyle='#E67E22';ctx.beginPath();ctx.arc(p.x,p.y,12,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#fff';ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(i+1,p.x,p.y+1);
+      // Label
+      ctx.fillStyle='#2C3E50';ctx.font='bold 9px sans-serif';ctx.textAlign='center';ctx.textBaseline='bottom';
+      ctx.fillText(icon+name,p.x,p.y-14);
+    });
+
+    y+=mapH+12;
+
+    // Restore camera
+    cameraAngle=savedAngle;cameraHeight=savedHeight_;cameraDist=savedDist_;
+    cameraTarget.copy(savedTarget_);camera.fov=savedFov_;
+    updateCam();camera.updateProjectionMatrix();
+  }
+
+  // Step detail rows (non-diet games)
+  if(!isDiet&&stepRows.length>0){
     ctx.strokeStyle='#eee';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx+40,y);ctx.lineTo(cx+cw-40,y);ctx.stroke();y+=14;
     stepRows.forEach((row,i)=>{
       const spans=row.querySelectorAll('span');
@@ -766,8 +1027,10 @@ function pmFn(e){
         }
         tt.textContent=s?`${s.icon} ${s.name}`:'';
         tt.style.display='block';
-        tt.style.left=(e.clientX-tt.offsetWidth/2)+'px';
-        tt.style.top=(e.clientY-tt.offsetHeight-14)+'px';
+        let ttX=Math.max(4,Math.min(innerWidth-tt.offsetWidth-4,e.clientX-tt.offsetWidth/2));
+        let ttY=Math.max(4,e.clientY-tt.offsetHeight-14);
+        tt.style.left=ttX+'px';
+        tt.style.top=ttY+'px';
         tt.style.background=game.tooltipColor||'rgba(232,67,147,0.92)';
         document.body.style.cursor='pointer';
       }else{tt.style.display='none';document.body.style.cursor='default'}
@@ -775,7 +1038,8 @@ function pmFn(e){
     return;
   }
   if(game&&game.dragDisabled)return;
-  if(Math.abs(e.clientX-pStart.x)+Math.abs(e.clientY-pStart.y)>5)didDrag=true;
+  const dragThreshold=Math.ceil(5*devicePixelRatio);
+  if(Math.abs(e.clientX-pStart.x)+Math.abs(e.clientY-pStart.y)>dragThreshold)didDrag=true;
   const dx=e.clientX-prevMouse.x,dy=e.clientY-prevMouse.y;
   cameraAngle-=dx*0.005;
   cameraHeight=Math.max(1.2,Math.min(game&&game.phase?12:6,cameraHeight+dy*0.012));
@@ -4184,6 +4448,7 @@ function DietTrainGame(){
     MEAL_SLOTS.forEach(s=>{this.mealPlans[s.id]=[]});
     document.getElementById('hud').style.display='none';
     this.showNutriOverview();
+    if(innerWidth<=768)this.hideNutriOverview(); // mobile: toggle via 📊 button
     this.buildScene();
     this.preloadFoodModels(); // warm browser cache for 3D food models
     this.showFoodPanel();
@@ -4234,11 +4499,11 @@ function DietTrainGame(){
     // ── Mode indicator bar ──
     let headerHtml='';
     if(isTemplate){
-      headerHtml+=`<div style="background:linear-gradient(90deg,#F39C12,#F1C40F);color:#fff;padding:6px 10px;border-radius:8px;margin-bottom:6px;font-size:12px;font-weight:bold;text-align:center">📋 模板临摹模式 — 照范例勾选食材（${self.templateMatchCount}/2）</div>`;
+      headerHtml+=`<div style="background:linear-gradient(90deg,#F39C12,#F1C40F);color:#fff;padding:6px 10px;border-radius:8px;margin-bottom:6px;font-size:12px;font-weight:bold;text-align:center;position:relative">📋 模板临摹模式 — 照范例勾选食材（${self.templateMatchCount}/2）<span id="nutri-toggle" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);cursor:pointer;opacity:0.8;font-size:14px" onclick="game.toggleNutriMobile()">📊</span></div>`;
     }else if(isLimited){
-      headerHtml+=`<div style="background:linear-gradient(90deg,#E67E22,#D35400);color:#fff;padding:6px 10px;border-radius:8px;margin-bottom:6px;font-size:12px;font-weight:bold;text-align:center">🔒 限定选材模式 — 在约束范围内配餐</div>`;
+      headerHtml+=`<div style="background:linear-gradient(90deg,#E67E22,#D35400);color:#fff;padding:6px 10px;border-radius:8px;margin-bottom:6px;font-size:12px;font-weight:bold;text-align:center;position:relative">🔒 限定选材模式 — 在约束范围内配餐<span id="nutri-toggle" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);cursor:pointer;opacity:0.8;font-size:14px" onclick="game.toggleNutriMobile()">📊</span></div>`;
     }else{
-      headerHtml+=`<div style="background:linear-gradient(90deg,#27AE60,#2ECC71);color:#fff;padding:6px 10px;border-radius:8px;margin-bottom:6px;font-size:12px;font-weight:bold;text-align:center">🟢 自由配餐模式</div>`;
+      headerHtml+=`<div style="background:linear-gradient(90deg,#27AE60,#2ECC71);color:#fff;padding:6px 10px;border-radius:8px;margin-bottom:6px;font-size:12px;font-weight:bold;text-align:center;position:relative">🟢 自由配餐模式<span id="nutri-toggle" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);cursor:pointer;opacity:0.8;font-size:14px" onclick="game.toggleNutriMobile()">📊</span></div>`;
     }
     // Age selector (disabled in template mode)
     if(!isTemplate){
@@ -4354,6 +4619,17 @@ function DietTrainGame(){
   };
 
   this.hideNutriOverview=function(){const el=document.getElementById('nutri-overview');if(el)el.style.display='none'};
+
+  this.toggleNutriMobile=function(){
+    const el=document.getElementById('nutri-overview');
+    if(!el)return;
+    if(el.style.display==='none'||el.style.display===''){
+      el.style.display='block';
+      this.refreshNutriOverview();
+    }else{
+      el.style.display='none';
+    }
+  };
 
   this.refreshAll=function(){this.updatePlateContents();this.updateTotals();this.refreshNutriOverview();this.updatePlateStatus()};
 
@@ -5146,8 +5422,260 @@ function DietTrainGame(){
 
   this.completeDiet=function(){
     const self=this;
-    self.dietPhase='complete';self.hideDietEval();
-    showReport('🎉 膳食搭配训练完成！\n你已掌握学龄前儿童科学配餐方法。');
+    self.dietPhase='complete';self.hideDietEval();self.hideFoodPanel();self.hideNutriOverview();
+    self.showDietCompletionReport();
+  };
+
+  this.showDietCompletionReport=function(){
+    const self=this;
+    const guide=NUTRI_GUIDE[self.ageGroup];
+    const totals=self.calcTotals();
+    const ageLabel=self.ageGroup==='2-3'?'2~3':'4~5';
+
+    // ── Recalculate all scores (same as evaluateDiet) ──
+    const allFoods=[];let badCount=0;const badList=[];
+    Object.entries(self.mealPlans).forEach(([slotId,foods])=>{
+      foods.forEach(f=>{allFoods.push({...f,slotId});if(f.bad){badCount++;badList.push(f.icon+f.name)}});
+    });
+    const goodFoods=allFoods.filter(f=>!f.bad);
+
+    // A: Nutrition (40)
+    let nutriScore=0;const nutriMax=40;
+    const nutriItems=[];
+    const evalGroups=['谷类','薯类','蔬菜','水果','畜禽肉','水产品','蛋类','乳制品','大豆','坚果'];
+    const grpWeight={'谷类':6,'薯类':2,'蔬菜':6,'水果':5,'畜禽肉':4,'水产品':4,'蛋类':4,'乳制品':5,'大豆':3,'坚果':1};
+    evalGroups.forEach(grp=>{
+      const g=guide[grp];const amt=totals[grp]||0;const w=grpWeight[grp];
+      let s=0,status='';
+      if(grp==='薯类'||grp==='坚果'){s=amt>0?w:0;status=amt>0?'ok':'low'}
+      else if(amt>=g.min&&amt<=g.max){s=w;status='ok'}
+      else if(amt<g.min){s=g.min>0?Math.round(w*amt/g.min):0;status='low'}
+      else{s=Math.round(w*Math.max(0,1-(amt-g.max)/g.max));status=amt>g.max*1.5?'high':'ok'}
+      nutriScore+=s;
+      nutriItems.push({grp,amt,min:g.min,max:g.max,unit:g.unit,tip:g.tip,score:s,maxScore:w,status});
+    });
+    if(badCount>0)nutriScore=Math.max(0,nutriScore-badCount*4);
+
+    // B: Structure (25)
+    let structScore=0;const structMax=25;
+    const structItems=[];
+    const bfFoods=(self.mealPlans['breakfast']||[]).filter(f=>!f.bad);
+    const bfGroups=new Set(bfFoods.map(f=>f.group));
+    const bfReq=['乳制品','谷类','蛋类'];const bfVegFruit=bfGroups.has('蔬菜')||bfGroups.has('水果');
+    const bfMet=bfReq.filter(g=>bfGroups.has(g)).length+(bfVegFruit?1:0);
+    if(bfFoods.length>0){
+      if(bfMet>=4){structScore+=5;structItems.push({meal:'早餐',ok:true,detail:'乳制品+谷类+蛋类+蔬果齐全'})}
+      else{structScore+=Math.max(0,Math.round(bfMet/4*5));const miss=[];if(!bfGroups.has('乳制品'))miss.push('乳制品');if(!bfGroups.has('谷类'))miss.push('谷类');if(!bfGroups.has('蛋类'))miss.push('蛋类');if(!bfVegFruit)miss.push('蔬果');structItems.push({meal:'早餐',ok:false,detail:`缺${miss.join('、')}`})}
+    }else{structItems.push({meal:'早餐',ok:false,detail:'未安排'})}
+    ['lunch','dinner'].forEach(slotId=>{
+      const name=MEAL_SLOTS.find(s=>s.id===slotId).name;
+      const foods=(self.mealPlans[slotId]||[]).filter(f=>!f.bad);
+      const groups=new Set(foods.map(f=>f.group));
+      const hasStaple=groups.has('谷类')||groups.has('薯类');
+      const hasVeg=groups.has('蔬菜');const hasMeat=groups.has('畜禽肉')||groups.has('水产品');
+      const met=[hasStaple,hasVeg,hasMeat].filter(Boolean).length;
+      if(foods.length>0){
+        if(met>=3){structScore+=5;structItems.push({meal:name,ok:true,detail:'主食+蔬菜+肉类齐全'})}
+        else{structScore+=Math.round(met/3*5);const miss=[];if(!hasStaple)miss.push('主食');if(!hasVeg)miss.push('蔬菜');if(!hasMeat)miss.push('肉类');structItems.push({meal:name,ok:false,detail:`缺${miss.join('、')}`})}
+      }else{structItems.push({meal:name,ok:false,detail:'未安排'})}
+    });
+    const snackGood=['乳制品','水果','蛋类','坚果'];
+    ['morning-snack','afternoon-snack'].forEach(slotId=>{
+      const name=MEAL_SLOTS.find(s=>s.id===slotId).name;
+      const foods=(self.mealPlans[slotId]||[]).filter(f=>!f.bad);
+      if(foods.length>0){
+        const hasGood=foods.some(f=>snackGood.includes(f.group));
+        const hasBad=self.mealPlans[slotId].some(f=>f.bad);
+        if(hasBad){structItems.push({meal:name,ok:false,detail:'含不健康食物'})}
+        else if(hasGood){structScore+=5;structItems.push({meal:name,ok:true,detail:'加餐选择合理'})}
+        else{structScore+=2;structItems.push({meal:name,ok:false,detail:'建议选乳制品/水果/蛋类/坚果'})}
+      }else{structItems.push({meal:name,ok:false,detail:'未安排'})}
+    });
+    structScore=Math.min(structMax,structScore);
+
+    // C: Variety (20)
+    let varietyScore=0;const varietyMax=20;
+    const varietyItems=[];
+    const megaCheck=[
+      {name:'谷薯杂豆',groups:['谷类','薯类'],daily:3,icon:'🍚'},
+      {name:'蔬果菌藻',groups:['蔬菜','水果'],daily:4,icon:'🥦'},
+      {name:'鱼蛋肉禽',groups:['水产品','蛋类','畜禽肉'],daily:3,icon:'🍗'},
+      {name:'奶豆坚果',groups:['乳制品','大豆','坚果'],daily:2,icon:'🥛'},
+    ];
+    megaCheck.forEach(m=>{
+      const mFoods=goodFoods.filter(f=>m.groups.includes(f.group));
+      const unique=new Set(mFoods.map(f=>f.foodId));
+      const count=unique.size;
+      const s=count>=m.daily?5:Math.round(count/m.daily*5);
+      varietyScore+=s;
+      varietyItems.push({name:m.name,count,daily:m.daily,icon:m.icon,ok:count>=m.daily});
+    });
+
+    // D: Cooking & safety (15)
+    let cookScore=0;const cookMax=15;
+    const cookItems=[];
+    const dairyTotal=totals['乳制品']||0;
+    if(dairyTotal>=350){cookScore+=5;cookItems.push({ok:true,detail:`饮奶${dairyTotal}ml，达标`})}
+    else if(dairyTotal>0){cookScore+=2;cookItems.push({ok:false,detail:`饮奶${dairyTotal}ml，低于350~500ml`})}
+    else{cookItems.push({ok:false,detail:'未安排乳制品'})}
+    if(badCount===0){cookScore+=5;cookItems.push({ok:true,detail:'未选用高油盐糖食品'})}
+    else{cookScore+=Math.max(0,5-badCount*3);cookItems.push({ok:false,detail:`选用了${badList.join('、')}`})}
+    cookScore+=5;cookItems.push({ok:true,detail:'坚果豆类应磨粉打糊食用'});
+
+    const totalScore=Math.min(100,nutriScore+structScore+varietyScore+cookScore);
+    const grade=totalScore>=90?'S':totalScore>=75?'A':totalScore>=60?'B':totalScore>=45?'C':'D';
+    const gradeColor={S:'#FFD700',A:'#00b894',B:'#3498DB',C:'#f39c12',D:'#d63031'}[grade];
+    const gradeMsg={S:'优秀搭配！营养全面均衡，值得推广！',A:'良好搭配，小有不足，稍加改进即可！',B:'基本达标，部分环节需优化。',C:'搭配欠佳，建议参照指导调整。',D:'搭配不合理，请重新设计膳食方案。'}[grade];
+
+    // ── Generate recipes ──
+    const mainSlots=['breakfast','lunch','dinner'];
+    const allRecipes={};
+    mainSlots.forEach(slotId=>{
+      const foods=self.mealPlans[slotId]||[];
+      if(foods.length===0){allRecipes[slotId]=[];return}
+      // Simple recipe generation for report
+      const dishes=[];
+      const staples=[],meats=[],vegs=[],eggs=[],dairy=[],fruits=[],soy=[],nuts=[];
+      foods.filter(f=>!f.bad).forEach(f=>{
+        if(f.group==='谷类'||f.group==='薯类')staples.push(f);
+        else if(f.group==='畜禽肉'||f.group==='水产品')meats.push(f);
+        else if(f.group==='蔬菜')vegs.push(f);
+        else if(f.group==='蛋类')eggs.push(f);
+        else if(f.group==='乳制品')dairy.push(f);
+        else if(f.group==='水果')fruits.push(f);
+        else if(f.group==='大豆')soy.push(f);
+        else if(f.group==='坚果')nuts.push(f);
+      });
+      staples.forEach(f=>{dishes.push({name:STAPLE_NAMES[f.foodId]||f.name,foods:[f]})});
+      meats.forEach(m=>{const v=vegs.shift();if(v)dishes.push({name:`${(VEG_SHORT||{})[v.foodId]||v.name}${(COOK_METHODS[m.foodId]||['炖'])[0]}${m.name.replace('瘦','')}`,foods:[m,v]});else dishes.push({name:`${(COOK_METHODS[m.foodId]||['清蒸'])[0]}${m.name.replace('瘦','')}`,foods:[m]})});
+      vegs.forEach(v=>{dishes.push({name:`清蒸${(VEG_SHORT||{})[v.foodId]||v.name}`,foods:[v]})});
+      eggs.forEach(e=>{dishes.push({name:'蒸蛋',foods:[e]})});
+      soy.forEach(s=>{dishes.push({name:'清蒸豆腐',foods:[s]})});
+      dairy.forEach(d=>{dishes.push({name:d.name,foods:[d]})});
+      if(fruits.length>0)dishes.push({name:fruits.length===1?fruits[0].name:'水果拼盘',foods:fruits});
+      if(nuts.length>0)dishes.push({name:nuts.length===1?nuts[0].name:'坚果碎',foods:nuts});
+      allRecipes[slotId]=dishes;
+    });
+
+    // ── Build completion screen ──
+    document.getElementById('report-grade').textContent=grade;
+    document.getElementById('report-grade').style.color=gradeColor;
+    document.getElementById('complete-msg').textContent=gradeMsg;
+
+    const card=document.getElementById('report-card');
+    let html=`<h2>🥗 膳食搭配实训报告</h2>`;
+    html+=`<div class="report-row"><span class="label">综合评分</span><span class="value" style="color:${gradeColor};font-size:18px">${totalScore}/100分</span></div>`;
+    html+=`<div class="report-row"><span class="label">年龄段</span><span class="value">${ageLabel}岁</span></div>`;
+    html+=`<div class="report-row"><span class="label">训练模式</span><span class="value">${self.dietPhase==='complete'&&self._originalPhase?self._originalPhase:self.dietPhase}</span></div>`;
+
+    // ── Scoring dimensions ──
+    html+=`<div style="margin-top:10px;padding-top:8px;border-top:2px solid rgba(255,255,255,0.2)"><div style="font-weight:bold;margin-bottom:6px;font-size:13px">📊 评分维度</div></div>`;
+    const dims=[
+      {name:'营养充足',score:nutriScore,max:nutriMax,icon:'📊',color:'#3498DB'},
+      {name:'餐次结构',score:structScore,max:structMax,icon:'⚖️',color:'#E67E22'},
+      {name:'食物多样',score:varietyScore,max:varietyMax,icon:'🌈',color:'#27AE60'},
+      {name:'烹调安全',score:cookScore,max:cookMax,icon:'🍳',color:'#9B59B6'},
+    ];
+    dims.forEach(d=>{
+      const pct=Math.round(d.score/d.max*100);
+      html+=`<div class="report-row"><span class="label">${d.icon} ${d.name}</span><span class="value"><span style="color:${d.color}">${d.score}</span>/${d.max}</span></div>`;
+      html+=`<div style="background:rgba(255,255,255,0.15);border-radius:3px;height:4px;margin:2px 0 6px"><div style="background:${d.color};height:4px;border-radius:3px;width:${pct}%"></div></div>`;
+    });
+
+    // ── Complete meal plan ──
+    html+=`<div style="margin-top:10px;padding-top:8px;border-top:2px solid rgba(255,255,255,0.2)"><div style="font-weight:bold;margin-bottom:6px;font-size:13px">🍽️ 完整配餐方案</div></div>`;
+    MEAL_SLOTS.forEach(slot=>{
+      const foods=self.mealPlans[slot.id]||[];
+      html+=`<div style="margin:4px 0;padding:4px 6px;background:rgba(255,255,255,0.1);border-radius:6px">`;
+      html+=`<div style="font-weight:bold;font-size:12px">${slot.icon} ${slot.name}（${slot.time}）</div>`;
+      if(foods.length===0){
+        html+=`<div style="font-size:11px;opacity:0.6;margin-left:16px">未安排</div>`;
+      }else{
+        html+=`<div style="font-size:11px;margin-left:16px">${foods.map(f=>`${f.icon}${f.name}${f.grams}g${f.bad?' ⚠️':''}`).join('、')}</div>`;
+      }
+      html+=`</div>`;
+    });
+
+    // ── Recipes ──
+    html+=`<div style="margin-top:10px;padding-top:8px;border-top:2px solid rgba(255,255,255,0.2)"><div style="font-weight:bold;margin-bottom:6px;font-size:13px">📋 一日菜谱</div></div>`;
+    const slotInfo={breakfast:{icon:'🌅',name:'早餐'},lunch:{icon:'☀️',name:'午餐'},dinner:{icon:'🌙',name:'晚餐'}};
+    mainSlots.forEach(slotId=>{
+      const info=slotInfo[slotId];
+      const dishes=allRecipes[slotId]||[];
+      if(dishes.length===0)return;
+      const slot=MEAL_SLOTS.find(s=>s.id===slotId);
+      html+=`<div style="margin:4px 0;padding:6px 8px;background:rgba(255,255,255,0.1);border-radius:6px">`;
+      html+=`<div style="font-weight:bold;font-size:12px">${info.icon} ${info.name}（${slot.time}）</div>`;
+      dishes.forEach(d=>{html+=`<div style="font-size:11px;margin-left:16px">🍽️ ${d.name}</div>`});
+      const allIngr=[];dishes.forEach(d=>d.foods.forEach(f=>{if(!allIngr.find(x=>x.foodId===f.foodId))allIngr.push(f)}));
+      const ingrParts=allIngr.map(f=>{const rm=RAW_MAP[f.foodId];return rm?`${rm.raw}${Math.round(f.grams*rm.ratio)}g`:f.name+f.grams+'g'});
+      html+=`<div style="font-size:10px;color:rgba(255,255,255,0.7);margin-top:2px;margin-left:16px">食材：${ingrParts.join('、')}</div>`;
+      html+=`</div>`;
+    });
+
+    // ── Nutrition overview ──
+    html+=`<div style="margin-top:10px;padding-top:8px;border-top:2px solid rgba(255,255,255,0.2)"><div style="font-weight:bold;margin-bottom:6px;font-size:13px">📊 营养摄入详情（${ageLabel}岁标准）</div></div>`;
+    nutriItems.forEach(n=>{
+      const ok=n.status==='ok';
+      const bar=Math.min(100,Math.round(n.amt/(n.max||n.min||1)*100));
+      const barColor=ok?'#27AE60':n.status==='low'?'#E74C3C':'#FF9800';
+      const range=n.min>0&&n.max>0?`${n.min}-${n.max}${n.unit}`:n.grp==='限量类'?'不宜选用':'适量';
+      html+=`<div style="display:flex;align-items:center;gap:4px;margin:2px 0;font-size:11px">`;
+      html+=`<span style="width:70px;opacity:0.85">${ok?'✅':'❌'} ${n.grp}</span>`;
+      html+=`<div style="flex:1;background:rgba(255,255,255,0.15);border-radius:3px;height:5px"><div style="background:${barColor};height:5px;border-radius:3px;width:${Math.min(bar,100)}%"></div></div>`;
+      html+=`<span style="width:100px;text-align:right;opacity:0.8;font-size:10px">${n.amt}${n.unit}/${range}</span>`;
+      html+=`</div>`;
+    });
+
+    // ── Structure assessment ──
+    html+=`<div style="margin-top:10px;padding-top:8px;border-top:2px solid rgba(255,255,255,0.2)"><div style="font-weight:bold;margin-bottom:6px;font-size:13px">⚖️ 餐次结构评估</div></div>`;
+    structItems.forEach(s=>{
+      html+=`<div style="margin:2px 0;font-size:11px;color:${s.ok?'rgba(255,255,255,0.9)':'#FFB74D'}">${s.ok?'✅':'❌'} ${s.meal}：${s.detail}</div>`;
+    });
+
+    // ── Variety ──
+    html+=`<div style="margin-top:10px;padding-top:8px;border-top:2px solid rgba(255,255,255,0.2)"><div style="font-weight:bold;margin-bottom:6px;font-size:13px">🌈 食物多样性</div></div>`;
+    varietyItems.forEach(v=>{
+      html+=`<div style="margin:2px 0;font-size:11px;color:${v.ok?'rgba(255,255,255,0.9)':'#FFB74D'}">${v.icon} ${v.ok?'✅':'❌'} ${v.name}：${v.count}/${v.daily}种</div>`;
+    });
+
+    // ── Suggestions ──
+    const suggestions=[];
+    nutriItems.filter(n=>n.status==='low'&&n.grp!=='薯类'&&n.grp!=='坚果').forEach(n=>{
+      suggestions.push({icon:'➕',title:`增加${n.grp}`,desc:`当前${n.amt}${n.unit}，推荐${n.min>0?n.min+'-'+n.max+n.unit:'适量'}。${n.tip}`});
+    });
+    nutriItems.filter(n=>n.status==='high').forEach(n=>{
+      suggestions.push({icon:'➖',title:`减少${n.grp}`,desc:`当前${n.amt}${n.unit}，超过上限${n.max}${n.unit}。${n.tip}`});
+    });
+    structItems.filter(s=>!s.ok).forEach(s=>{
+      suggestions.push({icon:'⚖️',title:`${s.meal}搭配需改进`,desc:s.detail});
+    });
+    varietyItems.filter(v=>!v.ok).forEach(v=>{
+      suggestions.push({icon:v.icon,title:`${v.name}种类不足`,desc:`需${v.daily}种以上，当前仅${v.count}种。`});
+    });
+    if(dairyTotal>0&&dairyTotal<350){
+      suggestions.push({icon:'🥛',title:'增加饮奶量',desc:'每日饮奶350~500ml，选择无添加糖的液态奶或酸奶。'});
+    }else if(dairyTotal===0){
+      suggestions.push({icon:'🥛',title:'每日饮奶不可少',desc:'学龄前儿童应每天饮奶350~500ml，奶类是钙和优质蛋白的重要来源。'});
+    }
+    if(badCount>0){
+      suggestions.push({icon:'⚠️',title:'远离高油盐糖食品',desc:`选用了${badList.join('、')}，应避免油炸、膨化食品及含糖饮料。`});
+    }
+    if(totalScore>=90){
+      suggestions.push({icon:'🌟',title:'搭配优秀！',desc:'你的膳食搭配在营养充足、餐次结构、食物多样和烹调安全方面都表现出色！'});
+    }
+
+    if(suggestions.length>0){
+      html+=`<div class="suggestion-section">`;
+      html+=`<div class="suggestion-header">💡 优化建议</div>`;
+      suggestions.forEach(tip=>{
+        html+=`<div class="suggestion-item"><span class="suggestion-icon">${tip.icon}</span><div class="suggestion-body"><div class="suggestion-title">${tip.title}</div><div class="suggestion-desc">${tip.desc}</div></div></div>`;
+      });
+      html+=`</div>`;
+    }
+
+    card.innerHTML=html;
+    document.getElementById('complete-screen').style.display='flex';
   };
 
   this.hideDietEval=function(){const p=document.getElementById('diet-eval-panel');if(p)p.remove()};
@@ -5729,8 +6257,10 @@ function DietTrainGame(){
         if(cur.userData&&cur.userData.foodName){
           tt.textContent=cur.userData.foodName+' 点击移除';
           tt.style.display='block';
-          tt.style.left=(e.clientX-tt.offsetWidth/2)+'px';
-          tt.style.top=(e.clientY-tt.offsetHeight-14)+'px';
+          let ttX2=Math.max(4,Math.min(innerWidth-tt.offsetWidth-4,e.clientX-tt.offsetWidth/2));
+          let ttY2=Math.max(4,e.clientY-tt.offsetHeight-14);
+          tt.style.left=ttX2+'px';
+          tt.style.top=ttY2+'px';
           tt.style.background=self.tooltipColor;
           document.body.style.cursor='pointer';
           return;
@@ -6357,6 +6887,7 @@ function OutdoorGame(){
     let groups=['力量类','灵敏类','平衡类'];
     let groupIcons={'力量类':'💪','灵敏类':'⚡','平衡类':'⚖️'};
     let html='<h3 style="margin:0 0 8px;font-size:15px;color:#E67E22">📦 材料选择</h3>';
+    html+='<div id="equip-body">';
     groups.forEach(grp=>{
       html+=`<div class="equip-group"><div class="equip-group-header" onclick="this.parentElement.classList.toggle('collapsed')">${groupIcons[grp]} ${grp}<span class="collapse-icon">▼</span></div><div class="equip-group-items">`;
       // Get unique subcategories within this group
@@ -6369,6 +6900,8 @@ function OutdoorGame(){
       });
       html+='</div></div>';
     });
+    html+='</div>';
+    html+='<div id="equip-footer">';
     html+='<div class="equip-toolbar">';
     html+='<button id="eq-rotate" title="旋转">🔄 旋转</button>';
     html+='<button id="eq-delete" title="删除">🗑️ 删除</button>';
@@ -6378,6 +6911,7 @@ function OutdoorGame(){
     html+='<button id="eq-export" title="导出设计图" style="display:none">📷 导出</button>';
     html+='</div>';
     html+='<div id="equip-info" style="font-size:11px;color:#888;margin-top:6px">已放置: 0 个器材</div>';
+    html+='</div>';
     panel.innerHTML=html;
     document.getElementById('canvas-container').appendChild(panel);
     panel.querySelectorAll('.equip-item').forEach(el=>{
@@ -6542,8 +7076,10 @@ function OutdoorGame(){
         const catItem=EQUIPMENT_CATALOG.find(c=>c.id===item.type);
         tt.textContent=catItem?`${catItem.icon} ${catItem.name}`:item.name;
         tt.style.display='block';
-        tt.style.left=(e.clientX-tt.offsetWidth/2)+'px';
-        tt.style.top=(e.clientY-tt.offsetHeight-14)+'px';
+        let ttX=Math.max(4,Math.min(innerWidth-tt.offsetWidth-4,e.clientX-tt.offsetWidth/2));
+        let ttY=Math.max(4,e.clientY-tt.offsetHeight-14);
+        tt.style.left=ttX+'px';
+        tt.style.top=ttY+'px';
         tt.style.background=self.tooltipColor;
         document.body.style.cursor='pointer';
       }else{
@@ -6963,7 +7499,7 @@ function OutdoorGame(){
         self.phase='done';
         self.previewKid.position.copy(self.routeOrder[0].mesh.position);
         hideSubstep();
-        setTimeout(()=>{self.showExerciseReport()},500);
+        setTimeout(()=>{self.showPreviewDoneChoices()},500);
         return;
       }
       self.currentStep=self.previewIdx;
@@ -7210,6 +7746,76 @@ function OutdoorGame(){
     }
 
     return tips;
+  };
+
+  this.showPreviewDoneChoices=function(){
+    const self=this;
+    let dlg=document.getElementById('preview-done-dlg');
+    if(!dlg){
+      dlg=document.createElement('div');dlg.id='preview-done-dlg';
+      dlg.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:30;background:rgba(255,255,255,0.97);border-radius:18px;padding:24px 28px;box-shadow:0 6px 32px rgba(0,0,0,0.2);text-align:center;min-width:260px';
+      document.getElementById('canvas-container').appendChild(dlg);
+    }
+    dlg.innerHTML=`
+      <div style="font-size:28px;margin-bottom:8px">🎉</div>
+      <div style="font-size:17px;font-weight:bold;color:#2d3436;margin-bottom:6px">预览完成！</div>
+      <div style="font-size:13px;color:#888;margin-bottom:18px">小朋友顺利走完全部路线，接下来？</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button id="pd-place" style="padding:12px 20px;border:none;border-radius:14px;background:#3498DB;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.1)">📦 调整材料</button>
+        <button id="pd-route" style="padding:12px 20px;border:none;border-radius:14px;background:#E67E22;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.1)">📍 重新设计路线</button>
+        <button id="pd-submit" style="padding:12px 20px;border:none;border-radius:14px;background:#00b894;color:#fff;font-size:15px;font-weight:bold;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.1)">✅ 提交评分</button>
+      </div>`;
+    dlg.style.display='block';
+    document.getElementById('pd-place').addEventListener('click',function(){
+      dlg.style.display='none';
+      self.returnToPlaceMode();
+    });
+    document.getElementById('pd-route').addEventListener('click',function(){
+      dlg.style.display='none';
+      self.returnToRouteMode();
+    });
+    document.getElementById('pd-submit').addEventListener('click',function(){
+      dlg.style.display='none';
+      self.showExerciseReport();
+    });
+  };
+
+  this._cleanupPreview=function(){
+    const self=this;
+    self.dragDisabled=false;
+    if(self._savedCam){
+      cameraAngle=self._savedCam.angle;cameraHeight=self._savedCam.height;
+      cameraDist=self._savedCam.dist;cameraTarget.copy(self._savedCam.target);
+      updateCam();self._savedCam=null;
+    }
+    if(self.previewKid){scene.remove(self.previewKid);self.previewKid=null}
+    self.routeLines.forEach(l=>scene.remove(l));self.routeLines=[];
+    self.routeArrows.forEach(a=>scene.remove(a));self.routeArrows=[];
+    // Remove number labels from items
+    self.placedItems.forEach(item=>{
+      if(item._label){item.mesh.remove(item._label);item._label=null}
+    });
+    const fpBtn=document.getElementById('fp-exit');if(fpBtn)fpBtn.style.display='none';
+  };
+
+  this.returnToPlaceMode=function(){
+    const self=this;
+    self._cleanupPreview();
+    self.routeOrder=[];
+    self.phase='place';
+    self.showEquipmentPanel();
+    document.getElementById('hud-title').textContent='体能大循环·设计';
+    showMsg('📦 可自由调整材料位置！','info',2500);
+    showSubstep('材料调整','点击右侧面板添加/删除器材\n拖拽移动位置');
+  };
+
+  this.returnToRouteMode=function(){
+    const self=this;
+    self._cleanupPreview();
+    self.routeOrder=[];
+    self.phase='route';
+    self.showEquipmentPanel();
+    self.enterRouteMode();
   };
 
   this.showExerciseReport=function(){
