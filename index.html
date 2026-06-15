@@ -267,7 +267,7 @@ canvas{display:block;touch-action:none}
   #food-header>div{font-size:9px!important;padding:4px 5px!important}
   .meal-tabs{gap:1px;margin-bottom:3px;flex-wrap:wrap}
   .meal-tab{font-size:8px;padding:3px 4px;border-radius:4px;min-height:24px}
-  #meal-info{font-size:8px!important;margin:1px 0!important}
+  #meal-info{position:fixed!important;top:8px;right:8px;z-index:16;font-size:9px!important;margin:0!important;max-width:45vw;background:rgba(142,68,173,0.88);color:#fff!important;padding:4px 8px;border-radius:8px;line-height:1.3;pointer-events:none}
   #food-body{max-height:22vh;-webkit-overflow-scrolling:touch}
   .food-item{font-size:10px;padding:4px 5px;min-height:28px}
   .food-gram{font-size:7px}
@@ -4470,7 +4470,10 @@ function DietTrainGame(){
   this.calcTotals=function(){const t={};Object.values(this.mealPlans).forEach(foods=>{foods.forEach(f=>{t[f.group]=(t[f.group]||0)+f.grams})});return t};
 
   this.init=function(){
-    cameraTarget=new THREE.Vector3(0,0.5,0);cameraAngle=0.35;cameraHeight=2.5;cameraDist=4.5;updateCam();
+    cameraTarget=new THREE.Vector3(0,0.5,0);cameraAngle=0.35;cameraHeight=2.5;cameraDist=4.5;
+    // On mobile, shift camera up so food plates show in top half of screen
+    if(innerWidth<=768){cameraTarget=new THREE.Vector3(0,0.2,-1.2);cameraHeight=3.2;cameraDist=5.5}
+    updateCam();
     scene.add(new THREE.AmbientLight(0xFFFFF0,0.55));scene.add(new THREE.HemisphereLight(0x87CEEB,0xFFF5E0,0.45));
     const sun=new THREE.DirectionalLight(0xFFF5E0,1.0);sun.position.set(-3,6,4);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);const sc=sun.shadow.camera;sc.left=-6;sc.right=6;sc.top=6;sc.bottom=-6;scene.add(sun);
     // Initialize meal plans
@@ -4484,7 +4487,7 @@ function DietTrainGame(){
     document.getElementById('hud-title').textContent='膳食搭配·训练';document.getElementById('hud-title').style.color='#8E44AD';
     document.getElementById('instr-title').textContent='操作';document.getElementById('instr-title').style.color='#8E44AD';
     showMsg('🥗 为幼儿设计一日三餐两点，依据膳食指南科学喂养！','info',4000);
-    showSubstep(MEAL_SLOTS[0].name,MEAL_SLOTS[0].desc);
+    if(innerWidth>768)showSubstep(MEAL_SLOTS[0].name,MEAL_SLOTS[0].desc);
     this.updateStepList();
   };
 
@@ -4744,7 +4747,7 @@ function DietTrainGame(){
     document.querySelectorAll('.meal-tab').forEach((t,i)=>{t.className='meal-tab'+(i===idx?' active':'')});
     const slot=MEAL_SLOTS[idx];
     document.getElementById('meal-info').textContent=slot.time+' '+slot.desc;
-    showSubstep(slot.name,slot.desc);
+    if(innerWidth>768)showSubstep(slot.name,slot.desc);else hideSubstep();
     // Update status bar label
     self._updateStatusLabel();
     // Hide other meals' food, show current
@@ -4756,7 +4759,8 @@ function DietTrainGame(){
     const zOff=idx*2.0;
     if(self.statusLabel){self.statusLabel.position.z=zOff}
     // Zoom camera to comfortable viewing angle, centered on current meal
-    self._camAnim={from:{angle:cameraAngle,height:cameraHeight,dist:cameraDist,target:cameraTarget.clone()},to:{angle:0.35,height:2.0,dist:4.0,target:new THREE.Vector3(0,0.4,zOff)},t:0};
+    const isMobile=innerWidth<=768;
+    self._camAnim={from:{angle:cameraAngle,height:cameraHeight,dist:cameraDist,target:cameraTarget.clone()},to:{angle:0.35,height:isMobile?2.5:2.0,dist:isMobile?5.0:4.0,target:new THREE.Vector3(0,isMobile?0.2:0.4,isMobile?zOff-1.2:zOff)},t:0};
     self.updatePlateContents();
     self.refreshNutriOverview();
     // In template/limited mode, re-render panel to refresh checkboxes/restrictions
@@ -6419,7 +6423,7 @@ function DietTrainGame(){
   this.zoomOutPlates=function(){
     const self=this;
     self.focusedSlotId=null;
-    self._camAnim={from:{angle:cameraAngle,height:cameraHeight,dist:cameraDist,target:cameraTarget.clone()},to:{angle:0.35,height:2.5,dist:4.5,target:new THREE.Vector3(0,0.5,0)},t:0};
+    self._camAnim={from:{angle:cameraAngle,height:cameraHeight,dist:cameraDist,target:cameraTarget.clone()},to:{angle:0.35,height:innerWidth<=768?3.2:2.5,dist:innerWidth<=768?5.5:4.5,target:new THREE.Vector3(0,0.5,innerWidth<=768?-1.2:0)},t:0};
   };
   this.animate=function(){
     const self=this;const t=clock.getElapsedTime();
@@ -6476,7 +6480,6 @@ function OutdoorGame(){
     document.getElementById('hud-title').textContent='体能大循环·设计';document.getElementById('hud-title').style.color='#E67E22';
     document.getElementById('instr-title').textContent='操作';document.getElementById('instr-title').style.color='#E67E22';
     showMsg('🏕️ 从右侧选择材料，拖拽到操场布置体能大循环！','info',4000);
-    showSubstep('材料选择','点击右侧面板添加器材\n拖拽移动位置\n旋转/删除已选器材');
     this.bindDragEvents();
   };
 
