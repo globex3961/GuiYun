@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>幼儿园保育实操训练</title>
+<title>桂韵保教：学前健康教育虚拟仿真实训平台</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{overflow:hidden;font-family:'Microsoft YaHei','PingFang SC',sans-serif;background:#1a1a2e}
@@ -49,6 +49,7 @@ canvas{display:block;touch-action:none}
 /* ── HUD ── */
 #hud{position:absolute;top:16px;left:16px;z-index:10;background:rgba(255,255,255,0.94);border-radius:14px;padding:14px 18px;box-shadow:0 4px 20px rgba(0,0,0,0.12);min-width:260px;max-height:90vh;overflow-y:auto;display:none}
 #hud h2{font-size:15px;margin-bottom:8px;border-bottom:2px dashed;padding-bottom:5px}
+#mobile-step,#mobile-step-bar,.step-progress{display:none}
 .step-list{list-style:none;padding:0}
 .step-list li{padding:5px 10px;margin:2px 0;border-radius:10px;font-size:13px;display:flex;align-items:center;gap:7px;transition:all .3s}
 .step-list li.done{background:#00b894;color:#fff}
@@ -242,13 +243,18 @@ canvas{display:block;touch-action:none}
   .game-card .card-btn{font-size:11px;padding:10px 16px;min-height:40px}
 
   /* ── Shared panel layout on mobile ── */
-  /* HUD moves to compact top bar */
-  #hud{top:0;bottom:auto;left:0;right:0;min-width:unset;max-height:45vh;border-radius:0 0 14px 14px;width:100%;max-width:100%;z-index:11;overflow-y:auto}
-  #hud h2{font-size:12px;padding:4px 0 2px}
-  .step-list li{font-size:11px;padding:6px 8px;gap:6px;min-height:32px}
-  .step-icon{width:20px;font-size:12px}
-  .step-group{font-size:9px;padding:3px 6px;margin:3px 0 1px}
-  .step-error-heat{font-size:9px;padding:0 3px}
+  /* HUD → compact single-step indicator */
+  #hud{top:0;bottom:auto;left:0;right:0;min-width:unset;max-height:unset;border-radius:0 0 14px 14px;width:100%;max-width:100%;z-index:11;overflow:visible;padding:6px 12px}
+  #hud h2{font-size:10px;padding:0;margin:0 0 2px;border:none;display:flex;align-items:center;justify-content:space-between}
+  #hud .step-progress{display:inline;font-size:9px;color:#999;font-weight:normal}
+  .step-list{display:none}
+  #mobile-step{display:flex!important;align-items:center;gap:6px;padding:4px 10px;border-radius:8px;background:#fdcb6e;color:#2d3436;font-size:12px;font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #mobile-step .step-icon{width:18px;font-size:14px;flex-shrink:0}
+  #mobile-step .step-done-dot{width:6px;height:6px;border-radius:50%;background:#00b894;flex-shrink:0}
+  #mobile-step-bar{display:flex!important;gap:3px;margin-top:3px}
+  #mobile-step-bar span{flex:1;height:3px;border-radius:2px;background:#e0e0e0;transition:background .3s}
+  #mobile-step-bar span.done{background:#00b894}
+  #mobile-step-bar span.active{background:#fdcb6e}
 
   /* Right panels → bottom drawer with fixed footer */
   #equip-panel{top:auto;bottom:0;left:0;right:0;width:100%;max-width:100%;max-height:60vh;border-radius:14px 14px 0 0;padding:10px 12px 12px}
@@ -314,9 +320,9 @@ canvas{display:block;touch-action:none}
 
   /* Messages */
   #message{font-size:12px;padding:8px 16px;bottom:56px;max-width:85vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  #substep-panel{max-width:88vw;padding:10px 14px;bottom:60px;font-size:11px}
-  #substep-panel h3{font-size:13px}
-  #substep-panel p{font-size:11px}
+  #substep-panel{max-width:85vw;padding:6px 12px;bottom:56px;font-size:10px;border-radius:10px}
+  #substep-panel h3{font-size:11px;margin-bottom:2px}
+  #substep-panel p{font-size:10px;line-height:1.4}
   #back-btn{font-size:12px;padding:8px 14px;top:8px;left:8px;transform:none;min-height:36px}
   #view-toggle-btn{font-size:12px;padding:8px 14px;bottom:8px;right:8px;min-height:36px}
 
@@ -429,7 +435,7 @@ canvas{display:block;touch-action:none}
   <button id="back-btn" onclick="backToMenu()">← 返回菜单</button>
   <button id="view-toggle-btn" onclick="toggleFirstPerson()">👁 第一人称</button>
   <div id="fp-crosshair"></div>
-  <div id="hud"><h2 id="hud-title">操作步骤</h2><ul class="step-list" id="step-list"></ul></div>
+  <div id="hud"><h2 id="hud-title">操作步骤 <span class="step-progress" id="step-progress"></span></h2><ul class="step-list" id="step-list"></ul><div id="mobile-step" style="display:none"></div><div id="mobile-step-bar" style="display:none"></div></div>
   <div id="instructions"><h3 id="instr-title">🎮 操作</h3><span id="instr-mouse">点击：操作<br>拖拽：旋转<br>滚轮：缩放</span><span id="instr-touch">点击操作·拖拽旋转·双指缩放</span></div>
   <div id="tooltip"></div>
   <div id="message"></div>
@@ -1138,11 +1144,24 @@ function buildStepList(){
     list.appendChild(li);
   });
 }
+function updateMobileStep(icon,text,total,done,activeIdx){
+  if(innerWidth>768)return;
+  const ms=document.getElementById('mobile-step');
+  const mb=document.getElementById('mobile-step-bar');
+  const sp=document.getElementById('step-progress');
+  if(ms)ms.innerHTML=`<span class="step-icon">${icon}</span> ${text}`;
+  if(sp)sp.textContent=`${Math.min(activeIdx+1,total)}/${total}`;
+  if(mb){mb.innerHTML='';for(let i=0;i<total;i++){const d=document.createElement('span');d.className=i<done?'done':i===activeIdx?'active':'';mb.appendChild(d)}}
+}
 function highlightCurrentStep(){
   game.STEPS.forEach((_,i)=>{
     const li=document.getElementById(`step-${i}`);if(!li)return;
     li.className=i<game.currentStep?'done':i===game.currentStep?'active':'pending';
   });
+  if(game.STEPS.length>0){
+    const cur=game.STEPS[game.currentStep]||game.STEPS[game.STEPS.length-1];
+    updateMobileStep(cur.icon,`${game.currentStep+1}. ${cur.name}`,game.STEPS.length,game.currentStep,game.currentStep);
+  }
   if(game.currentStep>0)recordStepComplete();
 }
 
@@ -7380,6 +7399,7 @@ function OutdoorGame(){
       const li=document.createElement('li');li.className='active';
       li.innerHTML='<span class="step-icon">📦</span> 自由摆放器材中...';
       list.appendChild(li);
+      updateMobileStep('📦','自由摆放器材中...',1,0,0);
     }else if(self.phase==='route'){
       const gh=document.createElement('li');gh.className='step-group outdoor-lg';gh.textContent='📍 循环路线';list.appendChild(gh);
       self.routeOrder.forEach((item,i)=>{
@@ -7392,6 +7412,7 @@ function OutdoorGame(){
         li.innerHTML='<span class="step-icon">🔄</span> 返回第1站 (循环)';
         list.appendChild(li);
       }
+      updateMobileStep('📍','设计循环路线',1,0,0);
     }else if(self.phase==='preview'||self.phase==='firstperson'){
       const gh=document.createElement('li');gh.className='step-group outdoor-lg';gh.textContent=self.phase==='firstperson'?'👁️ 第一视角预览':'🏃 体能大循环模拟';list.appendChild(gh);
       self.routeOrder.forEach((item,i)=>{
@@ -7400,6 +7421,8 @@ function OutdoorGame(){
         li.innerHTML=`<span class="step-icon">${i+1}</span> ${item.name}`;
         list.appendChild(li);
       });
+      const curItem=self.routeOrder[self.previewIdx]||self.routeOrder[self.routeOrder.length-1];
+      updateMobileStep(curItem?curItem.icon:'🏃',`${self.phase==='firstperson'?'👁️':'🏃'} ${curItem?curItem.name:'模拟中'}`,self.routeOrder.length,self.previewIdx,self.previewIdx);
     }
   };
 
