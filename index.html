@@ -256,16 +256,25 @@ canvas{display:block;touch-action:none}
   #mobile-step-bar span.done{background:#00b894}
   #mobile-step-bar span.active{background:#fdcb6e}
 
-  /* Right panels → bottom drawer with fixed footer */
-  #equip-panel{top:auto;bottom:0;left:0;right:0;width:100%;max-width:100%;max-height:60vh;border-radius:14px 14px 0 0;padding:10px 12px 12px}
-  #equip-panel h3{font-size:12px;margin-bottom:4px}
-  #equip-body{max-height:30vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
-  .equip-item{font-size:12px;padding:8px 10px;min-height:36px}
-  .equip-group-header{font-size:12px;padding:8px 10px;min-height:36px}
-  .equip-sub-header{font-size:10px}
-  #equip-footer{border-top:1px solid #eee;padding-top:6px;margin-top:4px}
+  /* Equipment panel → compact top bar on mobile */
+  #equip-panel{top:56px;bottom:auto;left:0;right:0;width:100%;max-width:100%;max-height:none;border-radius:0 0 14px 14px;padding:6px 8px;z-index:13}
+  #equip-panel h3{display:none}
+  #equip-body{max-height:none;overflow:visible}
+  .equip-group{margin-bottom:0}
+  .equip-group-header{display:none}
+  .equip-group.collapsed .equip-group-items{display:flex}
+  .equip-group-items{padding:0;display:flex;gap:2px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .equip-item{font-size:10px;padding:4px 8px;min-height:unset;white-space:nowrap;flex-shrink:0;border-radius:6px}
+  .equip-sub-header{display:none}
+  #equip-footer{border-top:1px solid #eee;padding-top:4px;margin-top:4px}
   .equip-toolbar{gap:4px}
   .equip-toolbar button{font-size:10px;padding:8px 4px;min-width:44px;border-radius:6px;min-height:36px}
+  /* Mobile category tabs for equipment */
+  .equip-cat-tabs{display:flex;gap:4px;margin-bottom:4px}
+  .equip-cat-tab{font-size:10px;padding:3px 8px;border-radius:10px;border:1px solid #E67E22;background:#fff;color:#E67E22;cursor:pointer;white-space:nowrap}
+  .equip-cat-tab.active{background:#E67E22;color:#fff}
+  .equip-items-row{display:flex;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 0}
+  .equip-items-row .equip-item{flex-shrink:0}
 
   #food-panel{top:50vh;bottom:0;left:50%;right:auto;width:50%;max-width:50%;height:50vh;max-height:50vh;border-radius:0;padding:8px 6px 8px 8px;font-size:11px}
   #food-panel h3{font-size:11px;margin-bottom:2px}
@@ -6945,39 +6954,90 @@ function OutdoorGame(){
     let existing=document.getElementById('equip-panel');
     if(existing)existing.remove();
     const panel=document.createElement('div');panel.id='equip-panel';
+    const isMobile=innerWidth<=768;
     let groups=['力量类','灵敏类','平衡类'];
     let groupIcons={'力量类':'💪','灵敏类':'⚡','平衡类':'⚖️'};
-    let html='<h3 style="margin:0 0 8px;font-size:15px;color:#E67E22">📦 材料选择</h3>';
-    html+='<div id="equip-body">';
-    groups.forEach(grp=>{
-      html+=`<div class="equip-group"><div class="equip-group-header" onclick="this.parentElement.classList.toggle('collapsed')">${groupIcons[grp]} ${grp}<span class="collapse-icon">▼</span></div><div class="equip-group-items">`;
-      // Get unique subcategories within this group
-      const subs=[...new Set(EQUIPMENT_CATALOG.filter(e=>e.group===grp).map(e=>e.sub))];
-      subs.forEach(sub=>{
-        html+=`<div class="equip-sub-header">${sub}</div>`;
-        EQUIPMENT_CATALOG.filter(e=>e.group===grp&&e.sub===sub).forEach(eq=>{
-          html+=`<div class="equip-item" data-type="${eq.id}">${eq.icon} ${eq.name}</div>`;
-        });
+    if(isMobile){
+      // Mobile: compact top bar — row 1: category tabs, row 2: scrollable items
+      let html='<div id="equip-body">';
+      html+='<div class="equip-cat-tabs">';
+      groups.forEach((grp,i)=>{
+        html+=`<div class="equip-cat-tab${i===0?' active':''}" data-grp="${grp}">${groupIcons[grp]}${grp}</div>`;
+      });
+      html+='</div>';
+      // Items for default (first) group
+      const defaultGrp=groups[0];
+      html+=`<div class="equip-items-row" id="equip-items-row">`;
+      EQUIPMENT_CATALOG.filter(e=>e.group===defaultGrp).forEach(eq=>{
+        html+=`<div class="equip-item" data-type="${eq.id}">${eq.icon} ${eq.name}</div>`;
       });
       html+='</div></div>';
-    });
-    html+='</div>';
-    html+='<div id="equip-footer">';
-    html+='<div class="equip-toolbar">';
-    html+='<button id="eq-rotate" title="旋转">🔄 旋转</button>';
-    html+='<button id="eq-delete" title="删除">🗑️ 删除</button>';
-    html+='<button id="eq-route" title="确认路线">✅ 确认路线</button>';
-    html+='<button id="eq-preview" title="预览模拟" style="display:none">▶️ 预览</button>';
-    html+='<button id="eq-fpview" title="第一视角预览" style="display:none">👁️ 第一视角</button>';
-    html+='<button id="eq-export" title="导出设计图" style="display:none">📷 导出</button>';
-    html+='</div>';
-    html+='<div id="equip-info" style="font-size:11px;color:#888;margin-top:6px">已放置: 0 个器材</div>';
-    html+='</div>';
-    panel.innerHTML=html;
-    document.getElementById('canvas-container').appendChild(panel);
-    panel.querySelectorAll('.equip-item').forEach(el=>{
-      el.addEventListener('click',function(){self.addEquipment(this.dataset.type)});
-    });
+      html+='<div id="equip-footer">';
+      html+='<div class="equip-toolbar">';
+      html+='<button id="eq-rotate" title="旋转">🔄</button>';
+      html+='<button id="eq-delete" title="删除">🗑️</button>';
+      html+='<button id="eq-route" title="确认路线">✅</button>';
+      html+='<button id="eq-preview" title="预览模拟" style="display:none">▶️</button>';
+      html+='<button id="eq-fpview" title="第一视角预览" style="display:none">👁️</button>';
+      html+='<button id="eq-export" title="导出设计图" style="display:none">📷</button>';
+      html+='</div>';
+      html+='<div id="equip-info" style="font-size:10px;color:#888;margin-top:4px">已放置: 0</div>';
+      html+='</div>';
+      panel.innerHTML=html;
+      document.getElementById('canvas-container').appendChild(panel);
+      // Category tab switching
+      panel.querySelectorAll('.equip-cat-tab').forEach(tab=>{
+        tab.addEventListener('click',function(){
+          panel.querySelectorAll('.equip-cat-tab').forEach(t=>t.classList.remove('active'));
+          this.classList.add('active');
+          const row=document.getElementById('equip-items-row');
+          const grp=this.dataset.grp;
+          row.innerHTML='';
+          EQUIPMENT_CATALOG.filter(e=>e.group===grp).forEach(eq=>{
+            const el=document.createElement('div');
+            el.className='equip-item';el.dataset.type=eq.id;
+            el.textContent=eq.icon+' '+eq.name;
+            el.addEventListener('click',function(){self.addEquipment(this.dataset.type)});
+            row.appendChild(el);
+          });
+        });
+      });
+      panel.querySelectorAll('.equip-items-row .equip-item').forEach(el=>{
+        el.addEventListener('click',function(){self.addEquipment(this.dataset.type)});
+      });
+    }else{
+      // Desktop: original accordion layout
+      let html='<h3 style="margin:0 0 8px;font-size:15px;color:#E67E22">📦 材料选择</h3>';
+      html+='<div id="equip-body">';
+      groups.forEach(grp=>{
+        html+=`<div class="equip-group"><div class="equip-group-header" onclick="this.parentElement.classList.toggle('collapsed')">${groupIcons[grp]} ${grp}<span class="collapse-icon">▼</span></div><div class="equip-group-items">`;
+        const subs=[...new Set(EQUIPMENT_CATALOG.filter(e=>e.group===grp).map(e=>e.sub))];
+        subs.forEach(sub=>{
+          html+=`<div class="equip-sub-header">${sub}</div>`;
+          EQUIPMENT_CATALOG.filter(e=>e.group===grp&&e.sub===sub).forEach(eq=>{
+            html+=`<div class="equip-item" data-type="${eq.id}">${eq.icon} ${eq.name}</div>`;
+          });
+        });
+        html+='</div></div>';
+      });
+      html+='</div>';
+      html+='<div id="equip-footer">';
+      html+='<div class="equip-toolbar">';
+      html+='<button id="eq-rotate" title="旋转">🔄 旋转</button>';
+      html+='<button id="eq-delete" title="删除">🗑️ 删除</button>';
+      html+='<button id="eq-route" title="确认路线">✅ 确认路线</button>';
+      html+='<button id="eq-preview" title="预览模拟" style="display:none">▶️ 预览</button>';
+      html+='<button id="eq-fpview" title="第一视角预览" style="display:none">👁️ 第一视角</button>';
+      html+='<button id="eq-export" title="导出设计图" style="display:none">📷 导出</button>';
+      html+='</div>';
+      html+='<div id="equip-info" style="font-size:11px;color:#888;margin-top:6px">已放置: 0 个器材</div>';
+      html+='</div>';
+      panel.innerHTML=html;
+      document.getElementById('canvas-container').appendChild(panel);
+      panel.querySelectorAll('.equip-item').forEach(el=>{
+        el.addEventListener('click',function(){self.addEquipment(this.dataset.type)});
+      });
+    }
     document.getElementById('eq-rotate').addEventListener('click',function(){self.rotateSelected()});
     document.getElementById('eq-delete').addEventListener('click',function(){self.deleteSelected()});
     document.getElementById('eq-route').addEventListener('click',function(){self.enterRouteMode()});
