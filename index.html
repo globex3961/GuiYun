@@ -25,7 +25,19 @@ canvas{display:block;touch-action:none}
 #menu-screen.cards-phase .subtitle{opacity:.9;pointer-events:auto}
 #menu-screen.cards-phase .game-cards{opacity:1;pointer-events:auto;max-height:none;margin-top:12px;padding:0 20px}
 @keyframes titlePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
-.game-card{background:rgba(255,255,255,0.95);border-radius:20px;padding:24px 18px;width:180px;min-width:0;color:#333;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,0.15);display:flex;flex-direction:column;opacity:0;transform:scaleX(0);transform-origin:left center;transition:opacity .5s ease,transform .5s cubic-bezier(.4,0,.2,1),box-shadow .2s}
+
+/* ── Login Screen ── */
+#login-screen{position:absolute;inset:0;z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;overflow:hidden}
+#login-screen::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#e84393,#fd79a8,#fdcb6e)}
+#login-box{position:relative;z-index:1;background:rgba(255,255,255,0.18);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:20px;padding:36px 32px;width:300px;max-width:90vw;box-shadow:0 8px 32px rgba(0,0,0,0.2)}
+#login-box h2{font-size:20px;margin-bottom:6px;text-align:center}
+#login-box .login-sub{font-size:12px;opacity:.85;text-align:center;margin-bottom:20px}
+#login-box input{width:100%;box-sizing:border-box;padding:10px 14px;margin-bottom:12px;border:none;border-radius:10px;font-size:14px;background:rgba(255,255,255,0.9);color:#333;outline:none}
+#login-box input:focus{background:#fff;box-shadow:0 0 0 2px rgba(255,255,255,0.6)}
+#login-box button{width:100%;padding:10px;border:none;border-radius:10px;font-size:15px;font-weight:bold;cursor:pointer;background:#fff;color:#e84393;transition:transform .15s}
+#login-box button:active{transform:scale(0.97)}
+#login-error{color:#fff;background:rgba(231,76,60,0.85);border-radius:8px;padding:6px 12px;font-size:12px;margin-top:8px;text-align:center;display:none}
+.game-card{background:rgba(255,255,255,0.95);border-radius:22px;padding:28px 22px;width:220px;min-width:0;color:#333;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,0.15);display:flex;flex-direction:column;opacity:0;transform:scaleX(0);transform-origin:left center;transition:opacity .5s ease,transform .5s cubic-bezier(.4,0,.2,1),box-shadow .2s}
 .game-card.visible{opacity:1;transform:scaleX(1)}
 .game-card.visible:hover{transform:scaleY(1) translateY(-4px);box-shadow:0 10px 32px rgba(0,0,0,0.2)}
 .game-card .card-icon{font-size:40px;margin-bottom:8px}
@@ -211,7 +223,7 @@ canvas{display:block;touch-action:none}
 @media(max-width:1024px)and(min-width:769px){
   #menu-screen.title-phase h1{font-size:36px}
   #menu-screen.cards-phase h1{font-size:26px}
-  .game-card{width:160px;padding:20px 14px}
+  .game-card{width:200px;padding:24px 18px}
   .game-card .card-icon{font-size:34px}
   .game-card h2{font-size:15px}
   .game-card .card-desc{font-size:11px}
@@ -228,6 +240,9 @@ canvas{display:block;touch-action:none}
 
 /* ── Mobile (max-width:768px) ── */
 @media(max-width:768px){
+  /* Login */
+  #login-box{padding:24px 20px;width:260px}
+  #login-box h2{font-size:18px}
   /* Menu */
   #menu-screen.title-phase h1{font-size:22px}
   #menu-screen.cards-phase h1{font-size:18px}
@@ -381,6 +396,18 @@ canvas{display:block;touch-action:none}
 </style>
 </head>
 <body>
+
+<!-- Login Screen -->
+<div id="login-screen">
+  <div id="login-box">
+    <h2>🔐 桂韵保教</h2>
+    <div class="login-sub">学前健康教育虚拟仿真实训平台</div>
+    <input id="login-user" type="text" placeholder="用户名" autocomplete="off">
+    <input id="login-pass" type="password" placeholder="密码" autocomplete="off">
+    <button onclick="doLogin()">登 录</button>
+    <div id="login-error">用户名或密码错误</div>
+  </div>
+</div>
 
 <!-- Menu Screen -->
 <div id="menu-screen" class="title-phase">
@@ -1183,6 +1210,21 @@ function animate(){
 /* ═══════════════════════════════════════════
    Game Switching
    ═══════════════════════════════════════════ */
+const AUTH_USER='guiyun',AUTH_PASS='12345';
+function doLogin(){
+  const u=document.getElementById('login-user').value.trim();
+  const p=document.getElementById('login-pass').value.trim();
+  if(u===AUTH_USER&&p===AUTH_PASS){
+    document.getElementById('login-screen').style.display='none';
+  }else{
+    const err=document.getElementById('login-error');
+    err.style.display='block';
+    setTimeout(()=>{err.style.display='none'},2000);
+  }
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&document.getElementById('login-screen').style.display!=='none'){doLogin()}
+});
 function enterCardsPhase(){
   const ms=document.getElementById('menu-screen');
   ms.classList.remove('title-phase');
